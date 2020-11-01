@@ -44,18 +44,3 @@ if __name__ == "__main__":
             break
     video.release()
     cv2.destroyAllWindows()
-
-    # styled_plot = plt.imshow(styled_image)
-    # plt.axis('off')
-    # plt.show()
-    #
-    # IMAGES_PATH = '/home/albert/Downloads/sam'
-    # for path in os.listdir(IMAGES_PATH):
-    #     start = time.time()
-    #     file = tf.io.read_file(os.path.join(IMAGES_PATH, path))
-    #     image = tf.io.decode_image(file)
-    #     output = style_transfer(stub, image)
-    #     styled_plot.set_data(output)
-    #     plt.draw()
-    #     end = time.time()
-    #     print(f'Time taken to predict: {end - start}s')
