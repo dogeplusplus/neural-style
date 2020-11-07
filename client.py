@@ -1,12 +1,28 @@
-import os
 import cv2
 import grpc
 import tensorflow as tf
 import numpy as np
-import matplotlib.pyplot as plt
 from tensorflow_serving.apis import predict_pb2, prediction_service_pb2_grpc
-import time
 
+def style_transfer_serving(stub, content, style, resize=None):
+    content = np.array(content, dtype=np.float32)
+    style = np.array(style, dtype=np.float32)
+
+    if resize:
+        content = cv2.resize(content, (512, 512))
+        style = cv2.resize(style, (512, 512))
+
+    image_proto = tf.make_tensor_proto(content[np.newaxis, ...] / 255.)
+    style_proto = tf.make_tensor_proto(style[np.newaxis, ...] / 255.)
+
+    request = predict_pb2.PredictRequest()
+    request.model_spec.name = 'style'
+    request.model_spec.signature_name = 'serving_default'
+    request.inputs['placeholder'].CopyFrom(image_proto)
+    request.inputs['placeholder_1'].CopyFrom(style_proto)
+    resp = stub.Predict(request)
+    stylized_image = tf.make_ndarray(resp.outputs['output_0'])[0]
+    return stylized_image
 
 if __name__ == "__main__":
     options = [
@@ -20,27 +36,7 @@ if __name__ == "__main__":
     file = tf.io.read_file('/home/albert/Downloads/pebbles.jpg')
     style = tf.io.decode_image(file)
 
-    style_image = cv2.resize(np.array(style, dtype=np.float32), (64, 64))[np.newaxis, ...] / 255.
-    style_proto = tf.make_tensor_proto(np.array(style, dtype=np.float32)[np.newaxis, ...] / 255.)
+    file = tf.io.read_file('/home/albert/Downloads/sam_and_nyx/sam_faces/sam_kitchen.jpg')
+    content = tf.io.decode_image(file)
 
-    def style_transfer(stub, image):
-        request.model_spec.name = 'style'
-        request.model_spec.signature_name = 'serving_default'
-        image = cv2.resize(np.array(image, dtype=np.float32), (512, 512))
-        image_proto = tf.make_tensor_proto(image[np.newaxis, ...] / 255.)
-
-        request.inputs['placeholder'].CopyFrom(image_proto)
-        request.inputs['placeholder_1'].CopyFrom(style_proto)
-        resp = stub.Predict(request)
-        stylized_image = tf.make_ndarray(resp.outputs['output_0'])[0]
-        return stylized_image
-
-    video = cv2.VideoCapture('/home/albert/Downloads/cat_yelling.mp4')
-    while video.isOpened():
-        ret, frame = video.read()
-        styled_image = style_transfer(stub, frame)
-        cv2.imshow('cheese', styled_image)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-    video.release()
-    cv2.destroyAllWindows()
+    style_transfer_serving(stub, content, style)

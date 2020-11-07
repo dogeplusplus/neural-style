@@ -8,3 +8,4 @@
 - gocv
 - tensorflow and tensorflow/serving repositories (for golang protobufs)
 - golang protobuf library
+- protobuf compiler
