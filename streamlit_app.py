@@ -23,7 +23,7 @@ def main():
     col1.subheader('Content Image')
     col2.subheader('Style Image')
     show_image = col1.empty()
-    show_style = col2.empty(i
+    show_style = col2.empty()
 
     st.subheader('Style Transfer')
     show_transfer = st.empty()
