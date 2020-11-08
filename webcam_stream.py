@@ -28,7 +28,7 @@ class WebcamVideoStream:
         self.stopped = True
 
 
-def style_transfer_direct(image, model, resize=None):
+def style_transfer_direct(image, style_image, model, resize=None):
     if resize:
         image = cv2.resize(np.array(image, dtype=np.float32), (512, 512))
     else:
@@ -40,11 +40,14 @@ def style_transfer_direct(image, model, resize=None):
 
 def main():
     model = tf.saved_model.load('style/1')
-    video_capture = WebcamVideoStream(0)
+    video_capture = WebcamVideoStream('http://192.168.0.10:4747/video')
     video_capture.start()
+
+    style_image = np.array(cv2.imread('/home/albert/Downloads/pattern.jpeg'), dtype=np.float32)[np.newaxis, ...] / 255.
+
     while True:
         content_image = video_capture.read()
-        transfer = style_transfer_direct(content_image, model)
+        transfer = style_transfer_direct(content_image, style_image, model)
         cv2.imshow('style camera', transfer)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
