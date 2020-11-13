@@ -19,7 +19,7 @@ def main():
     col1, col2 = st.beta_columns(2)
     content_file = st.sidebar.file_uploader('Upload Image', type=['jpg', 'jpeg', 'png'])
     style_file = st.sidebar.file_uploader('Upload Style', type=['jpg', 'jpeg', 'png'])
-    style_options = st.sidebar.selectbox(label='Example Styles', options=os.listdir('template_styles'))
+    style_options = st.sidebar.selectbox(label='Example Styles', options=os.listdir('assets/template_styles'))
     col1.subheader('Content Image')
     col2.subheader('Style Image')
     show_image = col1.empty()
@@ -39,7 +39,7 @@ def main():
         style = style_file.getvalue()
         show_style.image(style, use_column_width=True)
     elif style_options is not None:
-        with open(os.path.join('template_styles', style_options), 'rb') as f:
+        with open(os.path.join('assets/template_styles', style_options), 'rb') as f:
             style = f.read()
         show_style.image(style, use_column_width=True)
 
