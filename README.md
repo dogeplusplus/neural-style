@@ -1,14 +1,16 @@
-## Webcam Demo
+## Setup for both
 - Run `firstTimeSetup.sh`
 - Activate virtualenv `source venv/bin/activate`
-- Run streamlit webcam application `streamlit run webcam_stream.py`
+- Download style transfer model `python download_model.py`
+
+## Webcam Demo
+- Run streamlit webcam application inside virtualenv `make webcam`
 
 
 ## Image Demo
-- Run `firstTimeSetup.sh`
-- Activate virtualenv `source venv/bin/activate`
-- Pull tensorflow serving docker image and start tensorflow model server `make model-server`
-- In separate terminal call `make app`
+- Pull tensorflow serving docker image and start tensorflow model server `make model-server-cpu`
+- If you want to use GPU instead and have `nvidia-docker` then call `make model-server`
+- In separate terminal call in virtualenv `make app`
 
 
 ## Dependencies
@@ -17,8 +19,4 @@
 - Docker
 - Nvidia-docker
 - tensorflow/serving:latest-gpu image
-- Go
-- gocv
 - tensorflow and tensorflow/serving repositories (for golang protobufs)
-- golang protobuf library
-- protobuf compiler

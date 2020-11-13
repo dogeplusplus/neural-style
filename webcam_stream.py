@@ -80,7 +80,7 @@ def main():
     frame_rate = st.text(f'Frames per second: 0')
 
     if webcam_flag:
-        video_capture = WebcamVideoStream('http://192.168.0.10:4747/video')
+        video_capture = WebcamVideoStream(0)
         start = time.time()
         total_frames = 0
         try:
