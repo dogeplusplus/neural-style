@@ -1,6 +1,9 @@
 import os
+import cv2
+import numpy as np
 import streamlit as st
 import tensorflow as tf
+from PIL import Image
 from tensorflow_serving.apis import prediction_service_pb2_grpc
 
 from client import style_transfer_serving
@@ -42,9 +45,14 @@ def main():
             style = f.read()
         st.sidebar.image(style, use_column_width=True)
 
-    if content is not None and style is not None:
-        content_image = tf.io.decode_image(content)
-        style_image = tf.image.resize(tf.io.decode_image(style), (256, 256))
+    if content_file is not None and style_file is not None:
+        content = np.array(Image.open(content_file))
+        style = np.array(Image.open(style_file))
+        content = cv2.cvtColor(content, cv2.COLOR_BGRA2BGR)
+        style = cv2.cvtColor(style, cv2.COLOR_BGRA2BGR)
+
+        content_image = tf.convert_to_tensor(content)
+        style_image = tf.image.resize(tf.convert_to_tensor(style), (256, 256))
         with st.spinner('Generating style transfer...'):
             style_transfer = style_transfer_serving(stub, content_image, style_image)
             show_style.image(style_transfer, use_column_width=True)
